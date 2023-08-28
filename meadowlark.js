@@ -1,16 +1,19 @@
 import express from "express";
 import { engine } from 'express-handlebars';
-import {about, home, notFound, serverError} from "./lib/handlers.js";
+import {about, home, /*notFound,*/ serverError} from "./lib/handlers.js";
+import session from "express-session";
+
+// Для res.render() указываем имя файла вьюхи
 
 const app = express()
 
 /** Отключение заголовка данных о сервере */
 app.disable('x-powered-by')
 
-app.get('*', (req, res) => {
+/*app.get('*', (req, res) => {
   res.send(`Open your dev tools and examine your headers; ` +
     `you'll notice there is no x-powered-by header!`)
-})
+})*/
 
 
 const port = process.env.PORT || 4000
@@ -27,6 +30,29 @@ app.get('/', home)
 
 app.get('/about', about)
 
+/** рендер с layout */
+app.use(session({ resave: false, saveUninitialized: false, secret: 'keyboard cat' }))
+app.get('/greeting', (req, res) => {
+  res.render('greeting', {
+    message: 'Hello esteemed programmer!',
+    style: req.query.style,
+    /** Записать нужно как-то в куки (возможно пример далее) */
+    userid: req.cookies?.userid || "123",
+    username: req.session.username
+  })
+})
+
+/** рендер без layout (файл views/no-layout.handlebars) */
+app.get('/no-layout', (req, res) =>
+  res.render('no-layout', { layout: null })
+)
+
+/** Рендеринг представления с пользовательским макетом (файл views/custom-layout.handlebars) */
+app.get('/custom-layout', (req, res) =>
+  res.render('custom-layout', { layout: 'custom' })
+)
+
+
 /** заголовки запроса */
 app.get('/headers', (req, res) => {
   res.type('text/plain')
@@ -36,7 +62,25 @@ app.get('/headers', (req, res) => {
 })
 
 // custom 404 page
-app.use(notFound)
+app.use((req, res) =>
+  res.status(404).render('404')
+)
+
+//app.use(notFound)
+
+/** app.get поднять наверх, чтобы проверить */
+//app.get('*', (req, res) => res.render('08-click-here'))
+
+// Это должно наход иться ПОСЛЕ всех ваших маршрутов.
+// Обратите внимание на то, что, даже если вам
+// не нужна функция "next",
+// она должна быть включена, чтобы Express
+// распознал это как обработчик ошибок.
+app.use((err, req, res, next) => {
+  console.error('** SERVER ERROR: ' + err.message)
+  res.status(500).render('08-error', { message: "you shouldn't have clicked that!" })
+})
+
 
 // custom 500 page
 app.use(serverError)
