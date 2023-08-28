@@ -2,6 +2,7 @@ import express from "express";
 import { engine } from 'express-handlebars';
 import {about, home, /*notFound,*/ serverError} from "./lib/handlers.js";
 import session from "express-session";
+//import bodyParser from "body-parser";
 
 // Для res.render() указываем имя файла вьюхи
 
@@ -25,6 +26,12 @@ app.engine('handlebars', engine({
 app.set('view engine', 'handlebars')
 
 app.use(express.static(process.cwd() + '/public'))
+
+/** Для обработки post запроса .json() и .urlencoded() встроены в express. Либо можно использовать "body-parser" */
+//app.use(bodyParser.json());
+app.use(express.json());
+//app.use(bodyParser.urlencoded({ extended: false }))
+//app.use(express.urlencoded()({ extended: false }))
 
 app.get('/', home)
 
@@ -61,6 +68,15 @@ app.get('/headers', (req, res) => {
   res.send(headers.join('\n'))
 })
 
+
+app.get('/thank-you', (req, res) => res.render('10-thank-you'))
+
+/** обработка post запроса */
+app.post('/process-contact', (req, res) => {
+  console.log(`received contact from ${req.body.name} <${req.body.email}>`)
+  res.redirect(303, '/thank-you')
+})
+
 // custom 404 page
 app.use((req, res) =>
   res.status(404).render('404')
@@ -71,7 +87,7 @@ app.use((req, res) =>
 /** app.get поднять наверх, чтобы проверить */
 //app.get('*', (req, res) => res.render('08-click-here'))
 
-// Это должно наход иться ПОСЛЕ всех ваших маршрутов.
+// Это должно находиться ПОСЛЕ всех ваших маршрутов.
 // Обратите внимание на то, что, даже если вам
 // не нужна функция "next",
 // она должна быть включена, чтобы Express
