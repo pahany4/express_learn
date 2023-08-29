@@ -2,11 +2,15 @@
 <html lang="ru">
   <head>
     <title>Meadowlark Travel</title>
+      {{! т.к. вызов в export const sectionTest = (req, res) => res.render('section-test'), то теги из секций подставятся только на страницу /section-test  }}
+      {{{_sections.head}}}
   </head>
   <body>
     <header>
       <img src="/img/logo.png" alt="Meadowlark Travel Logo">
     </header>
     {{{body}}}
+    {{! т.к. вызов в export const sectionTest = (req, res) => res.render('section-test'), то теги из секций подставятся только на страницу /section-test  }}
+    {{{_sections.scripts}}}
   </body>
 </html>

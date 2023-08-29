@@ -1,6 +1,6 @@
 import express from "express";
 import { engine } from 'express-handlebars';
-import {about, home, /*notFound,*/ serverError} from "./lib/handlers.js";
+import {about, home, sectionTest, /*notFound,*/ serverError} from "./lib/handlers.js";
 import session from "express-session";
 //import bodyParser from "body-parser";
 
@@ -22,6 +22,13 @@ const port = process.env.PORT || 4000
 // configure Handlebars view engine
 app.engine('handlebars', engine({
   defaultLayout: 'main',
+  helpers: {
+    section: function(name, options) {
+      if(!this._sections) this._sections = {}
+      this._sections[name] = options.fn(this)
+      return null
+    },
+  },
 }))
 app.set('view engine', 'handlebars')
 
@@ -36,6 +43,9 @@ app.use(express.json());
 app.get('/', home)
 
 app.get('/about', about)
+
+/** Использование секций */
+app.get('/section-test', sectionTest)
 
 /** рендер с layout */
 app.use(session({ resave: false, saveUninitialized: false, secret: 'keyboard cat' }))
