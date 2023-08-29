@@ -72,9 +72,35 @@ app.get('/headers', (req, res) => {
 app.get('/thank-you', (req, res) => res.render('10-thank-you'))
 
 /** обработка post запроса */
-app.post('/process-contact', (req, res) => {
+/*app.post('/process-contact', (req, res) => {
   console.log(`received contact from ${req.body.name} <${req.body.email}>`)
   res.redirect(303, '/thank-you')
+})*/
+
+/** обработка post запроса с ошибками */
+app.post('/process-contact', (req, res) => {
+  try {
+    // here's where we would try to save contact to database or other
+    // persistence mechanism...for now, we'll just simulate an error
+    if(req.body.simulateError) {
+      /**  "simulateError": true в json запроса, throw new Error перекидывает в catch */
+      throw new Error("error saving contact!");
+    }
+    console.log(`contact from ${req.body.name} <${req.body.email}>`)
+    res.format({
+      'text/html': () => res.redirect(303, '/thank-you'),
+      'application/json': () => res.json({ success: true }),
+    })
+  } catch(err) {
+    // here's where we would handle any persistence failures
+    console.error(`error processing contact from ${req.body.name} ` +
+      `<${req.body.email}>`)
+    res.format({
+      'text/html': () =>  res.redirect(303, '/contact-error'),
+      'application/json': () => res.status(500).json({
+        error: 'error saving contact information' }),
+    })
+  }
 })
 
 // custom 404 page
