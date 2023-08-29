@@ -85,7 +85,7 @@ app.post('/process-contact', (req, res) => {
     if(req.body.simulateError) {
       /**  "simulateError": true в json запроса, throw new Error перекидывает в catch */
       throw new Error("error saving contact!");
-    }
+    }-
     console.log(`contact from ${req.body.name} <${req.body.email}>`)
     res.format({
       'text/html': () => res.redirect(303, '/thank-you'),
@@ -101,6 +101,30 @@ app.post('/process-contact', (req, res) => {
         error: 'error saving contact information' }),
     })
   }
+})
+
+/** get запрос с ответом json */
+const tours = [
+  { id: 0, name: 'Hood River', price: 99.99 },
+  { id: 1, name: 'Oregon Coast', price: 149.95 },
+]
+app.get('/api/tours', (req, res) => res.json(tours))
+
+/** put запрос */
+app.put('/api/tour/:id', (req, res) => {
+  const p = tours.find(p => p.id === parseInt(req.params.id))
+  if(!p) return res.status(410).json({ error: 'No such tour exists' })
+  if(req.body.name) p.name = req.body.name
+  if(req.body.price) p.price = req.body.price
+  res.json({ success: true })
+})
+
+/** delete запрос */
+app.delete('/api/tour/:id', (req, res) => {
+  const idx = tours.findIndex(tour => tour.id === parseInt(req.params.id))
+  if(idx < 0) return res.json({ error: 'No such tour exists.' })
+  tours.splice(idx, 1)
+  res.json({ success: true })
 })
 
 // custom 404 page
