@@ -10,7 +10,7 @@ import {
   newsletterSignupThankYou,
   sectionTest, /*notFound,*/
   serverError,
-  vacationPhotoContest,
+  vacationPhotoContest, vacationPhotoContestAjax,
   vacationPhotoContestProcess,
   vacationPhotoContestProcessError,
   vacationPhotoContestProcessThankYou
@@ -169,6 +169,7 @@ app.get('/newsletter', newsletter)
 
 /** работа с файлами*/
 app.get('/contest/vacation-photo', vacationPhotoContest)
+app.get('/contest/vacation-photo-ajax', vacationPhotoContestAjax)
 app.post('/contest/vacation-photo/:year/:month', (req, res) => {
   const form = new multiparty.Form()
   form.parse(req, (err, fields, files) => {
@@ -176,6 +177,13 @@ app.post('/contest/vacation-photo/:year/:month', (req, res) => {
     console.log('got fields: ', fields)
     console.log('and files: ', files)
     vacationPhotoContestProcess(req, res, fields, files)
+  })
+})
+app.post('/api/vacation-photo-contest/:year/:month', (req, res) => {
+  const form = new multiparty.Form()
+  form.parse(req, (err, fields, files) => {
+    if(err) return api.vacationPhotoContestError(req, res, err.message)
+    api.vacationPhotoContest(req, res, fields, files)
   })
 })
 app.get('/contest/vacation-photo-thank-you', vacationPhotoContestProcessThankYou)
