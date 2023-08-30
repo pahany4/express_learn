@@ -1,6 +1,14 @@
 import express from "express";
 import { engine } from 'express-handlebars';
-import {about, home, sectionTest, /*notFound,*/ serverError} from "./lib/handlers.js";
+import {
+  about,
+  home,
+  newsletterSignup,
+  newsletterSignupProcess,
+  newsletterSignupThankYou,
+  sectionTest, /*notFound,*/
+  serverError
+} from "./lib/handlers.js";
 import session from "express-session";
 import {weatherMiddleware} from "./lib/middleware/weather.js";
 //import bodyParser from "body-parser";
@@ -141,6 +149,11 @@ app.delete('/api/tour/:id', (req, res) => {
   tours.splice(idx, 1)
   res.json({ success: true })
 })
+
+
+app.get('/newsletter-signup', newsletterSignup)
+app.post('/newsletter-signup/process', newsletterSignupProcess)
+app.get('/newsletter-signup/thank-you', newsletterSignupThankYou)
 
 // custom 404 page
 app.use((req, res) =>
