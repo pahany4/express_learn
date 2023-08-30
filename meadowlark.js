@@ -9,10 +9,15 @@ import {
   newsletterSignupProcess,
   newsletterSignupThankYou,
   sectionTest, /*notFound,*/
-  serverError
+  serverError,
+  vacationPhotoContest,
+  vacationPhotoContestProcess,
+  vacationPhotoContestProcessError,
+  vacationPhotoContestProcessThankYou
 } from "./lib/handlers.js";
 import session from "express-session";
 import {weatherMiddleware} from "./lib/middleware/weather.js";
+import multiparty from "multiparty";
 //import bodyParser from "body-parser";
 
 // Для res.render() указываем имя файла вьюхи
@@ -152,7 +157,7 @@ app.delete('/api/tour/:id', (req, res) => {
   res.json({ success: true })
 })
 
-
+/** email подписка */
 app.get('/newsletter-signup', newsletterSignup)
 app.post('/newsletter-signup/process', newsletterSignupProcess)
 app.get('/newsletter-signup/thank-you', newsletterSignupThankYou)
@@ -161,6 +166,19 @@ app.post('/api/newsletter-signup', api.newsletterSignup)
 
 app.get('/newsletter', newsletter)
 
+
+/** работа с файлами*/
+app.get('/contest/vacation-photo', vacationPhotoContest)
+app.post('/contest/vacation-photo/:year/:month', (req, res) => {
+  const form = new multiparty.Form()
+  form.parse(req, (err, fields, files) => {
+    if(err) return vacationPhotoContestProcessError(req, res, err.message)
+    console.log('got fields: ', fields)
+    console.log('and files: ', files)
+    vacationPhotoContestProcess(req, res, fields, files)
+  })
+})
+app.get('/contest/vacation-photo-thank-you', vacationPhotoContestProcessThankYou)
 // custom 404 page
 app.use((req, res) =>
   res.status(404).render('404')
