@@ -1,1 +1,14 @@
 <h1>Welcome to Meadowlark Travel</h1>
+<!--
+Синтаксис вида {{! {{> partial_name}} }} описывает то, как вы включаете частичный
+шаблон в представление: express-handlebars будет знать, что нужно искать представление
+partial_name.handlebars (или weather.handlebars в нашем примере)
+в views/partials.
+
+express-handlebars поддерживает подкаталоги, так что, если у вас много частич­
+ных шаблонов, можете их упорядочить. Например, если у вас есть частичные
+шаблоны социальных медиа, можете разместить их в каталоге views/partials/social
+и включить с помощью {{! {{> social/facebook}}, }} {{! {{> social/twitter»}} }} и т. д.
+
+-->
+{{> weather }}

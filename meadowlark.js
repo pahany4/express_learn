@@ -2,6 +2,7 @@ import express from "express";
 import { engine } from 'express-handlebars';
 import {about, home, sectionTest, /*notFound,*/ serverError} from "./lib/handlers.js";
 import session from "express-session";
+import {weatherMiddleware} from "./lib/middleware/weather.js";
 //import bodyParser from "body-parser";
 
 // Для res.render() указываем имя файла вьюхи
@@ -39,6 +40,10 @@ app.use(express.static(process.cwd() + '/public'))
 app.use(express.json());
 //app.use(bodyParser.urlencoded({ extended: false }))
 //app.use(express.urlencoded()({ extended: false }))
+
+/** для использования переиспользуемых шаблонов */
+app.use(weatherMiddleware)
+
 
 app.get('/', home)
 
