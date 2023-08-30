@@ -2,7 +2,9 @@ import express from "express";
 import { engine } from 'express-handlebars';
 import {
   about,
+  api,
   home,
+  newsletter,
   newsletterSignup,
   newsletterSignupProcess,
   newsletterSignupThankYou,
@@ -154,6 +156,10 @@ app.delete('/api/tour/:id', (req, res) => {
 app.get('/newsletter-signup', newsletterSignup)
 app.post('/newsletter-signup/process', newsletterSignupProcess)
 app.get('/newsletter-signup/thank-you', newsletterSignupThankYou)
+
+app.post('/api/newsletter-signup', api.newsletterSignup)
+
+app.get('/newsletter', newsletter)
 
 // custom 404 page
 app.use((req, res) =>
