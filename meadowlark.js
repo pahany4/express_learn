@@ -21,6 +21,7 @@ import {weatherMiddleware} from "./lib/middleware/weather.js";
 import multiparty from "multiparty";
 import cookieParser from "cookie-parser";
 import {flashMiddleware} from "./lib/middleware/flash.js";
+import {unisender} from "./routes/unisender/unisender.js";
 //import bodyParser from "body-parser";
 
 // Для res.render() указываем имя файла вьюхи
@@ -58,7 +59,7 @@ app.use(express.static(process.cwd() + '/public'))
 app.use(express.json());
 //app.use(bodyParser.urlencoded({ extended: false }))
 //app.use(express.urlencoded()({ extended: false }))
-
+app.use(unisender)
 /** для использования переиспользуемых шаблонов */
 app.use(weatherMiddleware)
 
