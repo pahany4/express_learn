@@ -8,7 +8,8 @@
     "serve": "NODE_ENV=development nodemon meadowlark.js",
     "start": "node meadowlark.js",
     "test": "jest",
-    "prod": "NODE_ENV=production node meadowlark.js"
+    "prod": "NODE_ENV=production node meadowlark.js",
+    "stress": "artillery quick --count 10 -n 50 http://localhost:4000/"
   },
   "keywords": [
     "express"
