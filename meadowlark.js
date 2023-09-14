@@ -22,6 +22,8 @@ import multiparty from "multiparty";
 import cookieParser from "cookie-parser";
 import {flashMiddleware} from "./lib/middleware/flash.js";
 import {unisender} from "./routes/unisender/unisender.js";
+import morgan from "morgan";
+import * as fs from "fs";
 //import bodyParser from "body-parser";
 
 // Для res.render() указываем имя файла вьюхи
@@ -38,6 +40,17 @@ app.disable('x-powered-by')
 
 
 const port = process.env.PORT || 4000
+
+switch(app.get('env')) {
+  case 'development':
+    app.use(morgan('dev'))
+    break
+  case 'production':
+    const stream = fs.createWriteStream(process.cwd() + '/access.log',
+      { flags: 'a' })
+    app.use(morgan('combined', { stream }))
+    break
+}
 
 // configure Handlebars view engine
 app.engine('handlebars', engine({
