@@ -214,6 +214,28 @@ app.post('/api/vacation-photo-contest/:year/:month', (req, res) => {
   })
 })
 app.get('/contest/vacation-photo-thank-you', vacationPhotoContestProcessThankYou)
+
+app.get('/fail', (req, res) => {
+  throw new Error('НЕТ!')
+})
+
+app.get('/epic-fail', (req, res) => {
+  process.nextTick(() => {
+    throw new Error('Kaboom!')
+  })
+  res.send('embarrased')
+})
+
+process.on('uncaughtException', err => {
+  console.error('UNCAUGHT EXCEPTION', err.stack);
+  // do any cleanup you need to do here...close
+  // database connections, etc.  you'll probably
+  // also want to notify your operations team
+  // that a critical error occurred; you can use
+  // email or even better a service like Sentry,
+  // Rollbar, or New Relic
+  process.exit(1)
+})
 // custom 404 page
 app.use((req, res) =>
   res.status(404).render('404')
@@ -232,7 +254,7 @@ app.use((req, res) =>
 app.use((err, req, res, next) => {
   console.error('** SERVER ERROR: ' + err.message)
   console.log('** SERVER ERROR: ' + err)
-  res.status(500).render('08-error', {message: "you shouldn't have clicked that!"})
+  res.status(500).render('500', {message: "you shouldn't have clicked that!"})
 })
 
 
