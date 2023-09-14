@@ -226,6 +226,7 @@ app.use((err, req, res, next) => {
 // custom 500 page
 app.use(serverError)
 
+/** запуск в production $ NODE_ENV=production node meadowlark.js*/
 app.listen(port, () => console.log(
-  `Express started on http://localhost:${port}; ` +
+  `Сервер запущен на http://localhost:${port} в режиме ${process.env.NODE_ENV}. ` +
   `press Ctrl-C to terminate.`))
